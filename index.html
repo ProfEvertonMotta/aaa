@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário — JavaScript + PHP</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      color: #2C3E50;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1E3A5F 0%, #2E86C1 100%);
+      color: white;
+      padding: 30px 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #1E3A5F;
+      font-size: 14px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      transition: border-color 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2E86C1;
+      box-shadow: 0 0 0 3px rgba(46, 134, 193, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      margin-bottom: 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #8B0000 0%, #6B0000 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 0.2s;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(139, 0, 0, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .error {
+      background: #FFEBEE;
+      color: #C62828;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      display: none;
+      border-left: 4px solid #C62828;
+    }
+
+    .error.ativo {
+      display: block;
+    }
+
+    .success {
+      background: #E8F5E9;
+      color: #2E7D32;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      display: none;
+      border-left: 4px solid #4CAF50;
+    }
+
+    .success.ativo {
+      display: block;
+    }
+
+    .info-box {
+      background: #E3F2FD;
+      border-left: 4px solid #2E86C1;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 30px;
+      font-size: 13px;
+      color: #1565C0;
+      line-height: 1.6;
+    }
+
+    .code-inline {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #8B0000;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #888;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>📋 Formulário Cadastro</h1>
+    <p class="subtitle">JavaScript (validação) + PHP (processamento)</p>
+  </header>
+
+  <div class="card">
+    
+    <div class="error" id="erro">
+      <!-- Mensagem de erro aparece aqui -->
+    </div>
+
+    <div class="success" id="sucesso">
+      <!-- Mensagem de sucesso aparece aqui -->
+    </div>
+
+    <form id="formulario" onsubmit="validarFormulario(event)">
+
+      <!-- Nome -->
+      <div class="form-group">
+        <label for="nome">Nome Completo: *</label>
+        <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+      </div>
+
+      <!-- Email e Idade -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">E-mail: *</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade: *</label>
+          <input type="number" id="idade" name="idade" placeholder="Ex: 20" min="1" max="120" required>
+        </div>
+      </div>
+
+      <!-- Cidade e Estado -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cidade">Cidade: *</label>
+          <input type="text" id="cidade" name="cidade" placeholder="Ex: São Paulo" required>
+        </div>
+        <div class="form-group">
+          <label for="estado">Estado: *</label>
+          <select id="estado" name="estado" required>
+            <option value="">-- Escolha um estado --</option>
+            <option value="SP">São Paulo</option>
+            <option value="RJ">Rio de Janeiro</option>
+            <option value="MG">Minas Gerais</option>
+            <option value="RS">Rio Grande do Sul</option>
+            <option value="BA">Bahia</option>
+            <option value="PR">Paraná</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Mensagem -->
+      <div class="form-group">
+        <label for="mensagem">Mensagem:</label>
+        <textarea id="mensagem" name="mensagem" placeholder="Digite uma mensagem (opcional)"></textarea>
+      </div>
+
+      <!-- Checkbox -->
+      <div class="form-group">
+        <label style="display: flex; align-items: center; font-weight: normal; cursor: pointer;">
+          <input type="checkbox" id="aceita" name="aceita" required style="width: auto; margin-right: 8px;">
+          Concordo com os termos de uso *
+        </label>
+      </div>
+
+      <!-- Botão Enviar -->
+      <button type="submit">✉️ Enviar Formulário</button>
+
+    </form>
+  </div>
+
+  <div class="info-box">
+    <strong>ℹ️ Como funciona:</strong><br><br>
+    1. <strong>JavaScript</strong> (navegador): Valida se os campos estão preenchidos, se email é válido, idade é número.<br><br>
+    2. <strong>PHP</strong> (servidor): Processa os dados, valida novamente (segurança), salva no banco de dados ou arquivo.<br><br>
+    3. Os dados são enviados com <span class="code-inline">method="POST"</span> para o arquivo <span class="code-inline">processar.php</span>
+  </div>
+
+  <footer>
+    SENAC SP — JavaScript + PHP
+  </footer>
+
+</div>
+
+<script>
+  function validarFormulario(event) {
+    event.preventDefault(); // Evita que a página recarregue
+
+    const erroDiv = document.getElementById('erro');
+    const sucessoDiv = document.getElementById('sucesso');
+    
+    // Limpar mensagens anteriores
+    erroDiv.classList.remove('ativo');
+    sucessoDiv.classList.remove('ativo');
+
+    // Obter valores dos campos
+    const nome = document.getElementById('nome').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const idade = parseInt(document.getElementById('idade').value);
+    const cidade = document.getElementById('cidade').value.trim();
+    const estado = document.getElementById('estado').value;
+    const mensagem = document.getElementById('mensagem').value.trim();
+    const aceita = document.getElementById('aceita').checked;
+
+    // VALIDAÇÕES COM JAVASCRIPT ─────────────────────────────────
+
+    // 1. Validar nome (mínimo 3 caracteres)
+    if (nome.length < 3) {
+      mostrarErro('Nome deve ter pelo menos 3 caracteres.');
+      return false;
+    }
+
+    // 2. Validar email (formato básico)
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regexEmail.test(email)) {
+      mostrarErro('E-mail inválido. Digite um e-mail válido.');
+      return false;
+    }
+
+    // 3. Validar idade (deve estar entre 1 e 120)
+    if (isNaN(idade) || idade < 1 || idade > 120) {
+      mostrarErro('Idade deve estar entre 1 e 120 anos.');
+      return false;
+    }
+
+    // 4. Validar cidade (mínimo 2 caracteres)
+    if (cidade.length < 2) {
+      mostrarErro('Cidade deve ter pelo menos 2 caracteres.');
+      return false;
+    }
+
+    // 5. Validar estado (não pode estar vazio)
+    if (!estado) {
+      mostrarErro('Escolha um estado.');
+      return false;
+    }
+
+    // 6. Validar checkbox
+    if (!aceita) {
+      mostrarErro('Você deve concordar com os termos de uso.');
+      return false;
+    }
+
+    // Se chegou aqui, todas as validações passaram ✓
+    // Agora enviar para PHP
+    enviarParaPHP();
+
+    return false;
+  }
+
+  function mostrarErro(mensagem) {
+    const erroDiv = document.getElementById('erro');
+    erroDiv.textContent = '⚠️ ' + mensagem;
+    erroDiv.classList.add('ativo');
+  }
+
+  function enviarParaPHP() {
+    // Criar FormData com os dados do formulário
+    const formulario = document.getElementById('formulario');
+    const dados = new FormData(formulario);
+
+    // Enviar via fetch (AJAX) para processar.php
+    fetch('processar.php', {
+      method: 'POST',
+      body: dados
+    })
+    .then(response => response.text())
+    .then(resultado => {
+      // Mostrar resposta do PHP
+      const sucessoDiv = document.getElementById('sucesso');
+      sucessoDiv.innerHTML = '✅ ' + resultado;
+      sucessoDiv.classList.add('ativo');
+
+      // Limpar formulário
+      setTimeout(() => {
+        formulario.reset();
+      }, 1000);
+    })
+    .catch(erro => {
+      mostrarErro('Erro ao enviar dados: ' + erro);
+    });
+  }
+</script>
+
+</body>
+</html>
